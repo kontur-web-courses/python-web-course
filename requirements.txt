@@ -1,0 +1,14 @@
+django
+flake8
+djangorestframework
+mypy
+pytest
+pytest-django
+flake8-black
+flake8-import-order
+factory_boy
+black[d]
+pydantic
+pyjwt
+psycopg2
+drf-yasg[validation]

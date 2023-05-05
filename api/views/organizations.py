@@ -16,21 +16,14 @@ from rest_framework.viewsets import GenericViewSet
 
 from api.permissions import KeyPermissions
 from api.serializers import (
-    EmployeeSerializer,
+    CreateOrganizationSerializer,
+    ListOrganizationSerializer,
     OrganizationAddEmployeeSerializer,
-    OrganizationCreateSerializer,
-    OrganizationSerializer,
-    OrganizationUpdateSerializer,
+    UpdateOrganizationSerializer,
 )
 from organizations.models import Organization, Requisites
 
 User = get_user_model()
-
-
-class EmployeesViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
-    queryset = User.objects.filter(is_superuser=False)
-    serializer_class = EmployeeSerializer
-    permission_classes = [KeyPermissions]
 
 
 @method_decorator(
@@ -38,7 +31,7 @@ class EmployeesViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
     decorator=swagger_auto_schema(
         operation_summary="List organizations",
         operation_description="Get list organizations",
-        responses={status.HTTP_200_OK: OrganizationSerializer()},
+        responses={status.HTTP_200_OK: ListOrganizationSerializer()},
     ),
 )
 @method_decorator(
@@ -47,7 +40,7 @@ class EmployeesViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         operation_summary="One organization",
         operation_description="Get one organization by id",
         responses={
-            status.HTTP_200_OK: OrganizationSerializer(),
+            status.HTTP_200_OK: ListOrganizationSerializer(),
             status.HTTP_404_NOT_FOUND: "Organization by ID not found",
         },
     ),
@@ -58,7 +51,7 @@ class EmployeesViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         operation_summary="Сreate a new organization",
         operation_description="Сreate a new organization",
         responses={
-            status.HTTP_200_OK: OrganizationCreateSerializer(),
+            status.HTTP_200_OK: CreateOrganizationSerializer(),
             status.HTTP_400_BAD_REQUEST: "Data is not valid",
         },
     ),
@@ -69,7 +62,7 @@ class EmployeesViewSet(ListModelMixin, RetrieveModelMixin, GenericViewSet):
         operation_summary="Update organization",
         operation_description="Update organization",
         responses={
-            status.HTTP_200_OK: OrganizationUpdateSerializer(),
+            status.HTTP_200_OK: UpdateOrganizationSerializer(),
             status.HTTP_400_BAD_REQUEST: "Data is not valid",
         },
     ),
@@ -86,18 +79,18 @@ class OrganizationsViewSet(
 
     def get_serializer_class(self):
         matcher = {
-            "create": OrganizationCreateSerializer,
-            "partial_update": OrganizationUpdateSerializer,
+            "create": CreateOrganizationSerializer,
+            "partial_update": UpdateOrganizationSerializer,
             "add_employee": OrganizationAddEmployeeSerializer,
         }
-        return matcher.get(self.action, OrganizationSerializer)
+        return matcher.get(self.action, ListOrganizationSerializer)
 
     @swagger_auto_schema(
         operation_summary="Add employee to organization",
         operation_description="Add employee to organization",
         request_body=OrganizationAddEmployeeSerializer,
         responses={
-            status.HTTP_200_OK: OrganizationSerializer(),
+            status.HTTP_200_OK: ListOrganizationSerializer(),
             status.HTTP_400_BAD_REQUEST: "Data is not valid",
             status.HTTP_404_NOT_FOUND: "Organization by ID not found",
         },
@@ -109,7 +102,7 @@ class OrganizationsViewSet(
         serializer.is_valid(raise_exception=True)
         employees = serializer.validated_data.get("employees")
         organization.employees.add(*User.objects.filter(portal_user_id__in=employees))
-        serializer = OrganizationSerializer(organization)
+        serializer = ListOrganizationSerializer(organization)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
     @swagger_auto_schema(auto_schema=None)

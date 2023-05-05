@@ -2,6 +2,7 @@ from django.contrib.auth import get_user_model
 from rest_framework.fields import CharField, ListField
 from rest_framework.serializers import ModelSerializer
 
+from api.serializers.employees import ListEmployeeSerializer
 from api.validations import ValidateEmployeeMixin
 from organizations.models import Organization, Requisites
 
@@ -14,22 +15,8 @@ class RequisitesSerializer(ModelSerializer):
         fields = ("name", "value")
 
 
-class EmployeeSerializer(ModelSerializer):
-    class Meta:
-        model = User
-        fields = (
-            "portal_user_id",
-            "email",
-            "phone",
-            "role",
-            "deleted",
-            "created_at",
-            "updated_at",
-        )
-
-
-class OrganizationSerializer(ModelSerializer):
-    employees = EmployeeSerializer(many=True, required=False)
+class ListOrganizationSerializer(ModelSerializer):
+    employees = ListEmployeeSerializer(many=True, required=False)
     requisites = RequisitesSerializer(many=True)
 
     class Meta:
@@ -49,7 +36,7 @@ class OrganizationSerializer(ModelSerializer):
         }
 
 
-class OrganizationUpdateSerializer(ModelSerializer):
+class UpdateOrganizationSerializer(ModelSerializer):
     requisites = RequisitesSerializer(many=True)
 
     class Meta:
@@ -68,7 +55,7 @@ class OrganizationAddEmployeeSerializer(ModelSerializer, ValidateEmployeeMixin):
         fields = ("employees",)
 
 
-class OrganizationCreateSerializer(ModelSerializer, ValidateEmployeeMixin):
+class CreateOrganizationSerializer(ModelSerializer, ValidateEmployeeMixin):
     requisites = RequisitesSerializer(many=True)
     employees = ListField(
         child=CharField(),

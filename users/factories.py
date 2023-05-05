@@ -10,7 +10,7 @@ class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
 
-    username = factory.Sequence(lambda n: "Employee {}".format(n))
+    username = factory.Sequence(lambda n: "Employee_{}".format(n))
     portal_user_id = factory.LazyFunction(uuid.uuid4)
     email = factory.Sequence(lambda n: "user_{}@example.com".format(n))
     phone = factory.Sequence(lambda n: "790255549%02d" % n)

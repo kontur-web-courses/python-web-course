@@ -10,11 +10,11 @@ class Roles(models.TextChoices):
 
 
 class Operations(models.TextChoices):
-    ADMIN_INVITE = "admin invite", "admin invite"
-    ADD_PAYMENT = "add payment", "add payment"
-    APPROVE_PAYMENT = "approve payment", "approve payment"
-    SEND_PAYMENT = "send payment", "send payment"
-    CAN_VIEW_BALANCE = "can view balance", "can view balance"
+    ADMIN_INVITE = "admin_invite", "admin invite"
+    ADD_PAYMENT = "add_payment", "add payment"
+    APPROVE_PAYMENT = "approve_payment", "approve payment"
+    SEND_PAYMENT = "send_payment", "send payment"
+    CAN_VIEW_BALANCE = "can_view_balance", "can view balance"
 
 
 class User(AbstractUser):

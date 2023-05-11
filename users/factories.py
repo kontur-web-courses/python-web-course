@@ -16,3 +16,4 @@ class UserFactory(factory.django.DjangoModelFactory):
     phone = factory.Sequence(lambda n: "790255549%02d" % n)
     first_name = factory.Faker("first_name")
     last_name = factory.Faker("last_name")
+    is_superuser = False

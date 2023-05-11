@@ -25,12 +25,12 @@ class TestOrganizations:
 
     def test_get_list_organizations(self, client, headers):
         url = reverse("api:organization-list")
-        organizations = OrganizationFactory.create_batch(5)
+        _ = OrganizationFactory.create_batch(5)
 
         response = client.get(url, headers=headers)
 
         assert response.status_code == status.HTTP_200_OK
-        assert Organization.objects.count() == len(organizations)
+        assert Organization.objects.count() == len(response.json())
 
     def test_get_organization(self, client, headers):
         organization = OrganizationFactory()

@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.utils.decorators import method_decorator
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
-from rest_framework.decorators import action
 from rest_framework.mixins import (
     CreateModelMixin,
     ListModelMixin,

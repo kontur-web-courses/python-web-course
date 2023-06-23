@@ -12,7 +12,6 @@ from users.factories import UserFactory
 from users.models import Operations, RoleOperations, Roles
 from django.conf import settings
 
-
 User = get_user_model()
 
 
@@ -46,25 +45,38 @@ def regenerate() -> None:
     if not superuser:
         raise GenerateDataError
 
-    admin = RoleOperations.objects.create(
-        role=Roles.ADMIN,
-        operations=[
-            Operations.ADMIN_INVITE,
-            Operations.ADD_PAYMENT,
-            Operations.APPROVE_PAYMENT,
-            Operations.SEND_PAYMENT,
-        ],
+    admin_operations = [
+        Operations.ADMIN_INVITE,
+        Operations.ADD_PAYMENT,
+        Operations.APPROVE_PAYMENT,
+        Operations.SEND_PAYMENT,
+    ]
+    RoleOperations.objects.bulk_create(
+        [
+            RoleOperations(role=Roles.ADMIN, operation=operation)
+            for operation in admin_operations
+        ]
     )
-    user = RoleOperations.objects.create(
-        role=Roles.USER,
-        operations=[
-            Operations.ADD_PAYMENT,
-            Operations.SEND_PAYMENT,
-            Operations.CAN_VIEW_BALANCE,
-        ],
+    user_operations = [
+        Operations.ADD_PAYMENT,
+        Operations.SEND_PAYMENT,
+        Operations.CAN_VIEW_BALANCE,
+    ]
+    RoleOperations.objects.bulk_create(
+        [
+            RoleOperations(role=Roles.USER, operation=operation)
+            for operation in user_operations
+        ]
     )
-    approver = RoleOperations.objects.create(
-        role=Roles.APPROVER, operations=[Operations.APPROVE_PAYMENT]
+    approver_operations = [
+        Operations.APPROVE_PAYMENT,
+        Operations.CAN_VIEW_BALANCE,
+    ]
+    RoleOperations.objects.bulk_create(
+        [
+            RoleOperations(role=Roles.APPROVER, operation=operation)
+            for operation in approver_operations
+        ]
     )
 
     organizations = [
@@ -78,9 +90,9 @@ def regenerate() -> None:
             created_by_user=superuser,
             product_name=product_name,
             add_employees=[
-                UserFactory(role=[admin]),
-                *UserFactory.create_batch(2, role=[user]),
-                UserFactory(role=[approver]),
+                UserFactory(role=Roles.ADMIN),
+                *UserFactory.create_batch(2, role=Roles.USER),
+                UserFactory(role=Roles.APPROVER),
             ],
         )
         Requisites.objects.create(

@@ -13,7 +13,7 @@ admin.site.unregister(Group)
 
 @admin.register(RoleOperations)
 class RoleOperationsAdmin(admin.ModelAdmin):
-    pass
+    list_display = ("role", "operation")
 
 
 @admin.register(User)

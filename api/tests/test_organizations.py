@@ -49,8 +49,8 @@ class TestOrganizations:
             name="name", value="name organization", organization=organization
         )
         new_requisites = [
-            {"name": "name", "value": "new name organization"},
             {"name": "inn", "value": "23423424"},
+            {"name": "name", "value": "new name organization"},
         ]
         payload = {
             "requisites": new_requisites,

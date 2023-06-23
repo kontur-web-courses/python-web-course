@@ -1,5 +1,4 @@
 from django.contrib.auth.models import AbstractUser
-from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -27,11 +26,7 @@ class User(AbstractUser):
     email = models.EmailField(unique=True, null=True, blank=False)
     phone = models.CharField(max_length=11, unique=True, null=True, blank=False)
 
-    role = ArrayField(
-        models.CharField(max_length=30, choices=Roles.choices, default=Roles.USER),
-        blank=True,
-        default=list,
-    )
+    role = models.CharField(max_length=30, choices=Roles.choices, default=Roles.USER)
 
     deleted = models.BooleanField(default=False)
 
@@ -51,7 +46,7 @@ class RoleOperations(models.Model):
         db_table = "role_operations"
 
     role = models.CharField(max_length=30, choices=Roles.choices, default=Roles.USER)
-    operations = ArrayField(models.CharField(max_length=30, choices=Operations.choices))
+    operation = models.CharField(max_length=30, choices=Operations.choices)
 
     def __str__(self):
         return self.get_role_display()

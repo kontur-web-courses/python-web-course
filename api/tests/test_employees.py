@@ -6,7 +6,6 @@ from django.forms import model_to_dict
 from django.urls import reverse
 from rest_framework import status
 
-from services.data import regenerate
 from tokens.models import Token
 from users.factories import UserFactory
 from users.models import Roles
@@ -39,19 +38,13 @@ class TestEmployees:
         assert content["portal_user_id"] == str(employee.portal_user_id)
 
     def test_update_employee(self, client):
-        UserFactory(is_superuser=True)
-        regenerate()
-        employee = User.objects.filter(deleted=False).order_by("?").first()
+        employee = UserFactory(deleted=False, role=Roles.USER, phone="999999999")
         url = reverse(
             "api:employee-detail", kwargs={"portal_user_id": employee.portal_user_id}
         )
         payload = {
             "phone": "89025123456",
-            "role": [
-                Roles.ADMIN.value,
-                Roles.USER.value,
-                Roles.APPROVER.value,
-            ],
+            "role": Roles.APPROVER,
         }
         employee_data = model_to_dict(employee)
         employee_data.update(payload)
@@ -74,7 +67,8 @@ class TestEmployees:
             "portal_user_id": uuid.uuid4(),
             "email": "test_create@mail.ru",
             "phone": "89025123456",
-            "role": [Roles.USER.value],
+            "role": Roles.USER,
+            "username": "test_user",
         }
         response = client.post(
             url, data=payload, content_type="application/json", headers=headers

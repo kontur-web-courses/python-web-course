@@ -24,9 +24,9 @@ class ListEmployeeSerializer(ModelSerializer):
         )
 
     @staticmethod
-    def get_operations(obj):
-        return RoleOperations.objects.filter(role__in=obj.role).values_list(
-            "operations", flat=True
+    def get_operations(user):
+        return RoleOperations.objects.filter(role=user.role).values_list(
+            "operation", flat=True
         )
 
 
@@ -38,12 +38,14 @@ class CreateEmployeeSerializer(ModelSerializer):
             "email",
             "phone",
             "role",
+            "username",
         )
         extra_kwargs = {
             "portal_user_id": {"required": True},
             "email": {"required": True},
             "role": {"required": True},
             "phone": {"required": False},
+            "username": {"required": True},
         }
 
 

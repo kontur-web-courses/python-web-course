@@ -1,0 +1,12 @@
+[flake8]
+inline-quotes = "
+max-line-length = 88
+max-cognitive-complexity = 7
+enable-extensions = G
+exclude =
+    .git,
+    __pycache__,
+    venv,
+    migrations,
+    settings.py
+ignore = VNE001, B009, I201, I100, VNE003, A003, B008, I202, E731, W504
